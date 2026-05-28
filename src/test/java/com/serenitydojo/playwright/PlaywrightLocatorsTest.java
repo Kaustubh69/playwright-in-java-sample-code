@@ -29,13 +29,16 @@ public class PlaywrightLocatorsTest {
         playwright = Playwright.create();
         browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions().setHeadless(true)
-                        .setArgs(Arrays.asList("--no-sandbox", "--disable-extensions", "--disable-gpu"))
+                        .setArgs(Arrays.asList("--no-sandbox", "--disable-extensions", "--disable-gpu", "--start-maximized"))
+                        .setHeadless(false)
+                        .setSlowMo(500)
         );
     }
 
     @BeforeEach
     void setUp() {
         browserContext = browser.newContext();
+        browserContext = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
         page = browserContext.newPage();
     }
 
@@ -62,19 +65,24 @@ public class PlaywrightLocatorsTest {
         @DisplayName("By id")
         @Test
         void locateTheFirstNameFieldByID() {
-            // TODO: Make it so
+            page.locator("#first_name").fill("John");
+            PlaywrightAssertions.assertThat(page.locator("#first_name")).hasValue("John");
         }
 
         @DisplayName("By CSS class")
         @Test
         void locateTheSendButtonByCssClass() {
-            // TODO: Make it so
+            page.locator("#first_name").fill("John");
+            page.locator(".btnSubmit").click();
+            List<String> alert = page.locator(".alert").allTextContents();
+            Assertions.assertTrue(!alert.isEmpty());
         }
 
         @DisplayName("By attribute")
         @Test
         void locateTheSendButtonByAttribute() {
-            // TODO: Make it so
+           page.locator("[placeholder='Your last name *']").fill("John");
+           PlaywrightAssertions.assertThat(page.locator("#last_name")).hasValue("John");
         }
     }
 
@@ -195,19 +203,22 @@ public class PlaywrightLocatorsTest {
         @DisplayName("Locating an element by text contents")
         @Test
         void byText() {
-            // TODO: Make it so
+            page.getByText("Bolt Cutters").click();
+            PlaywrightAssertions.assertThat(page.getByText("MightyCraft Hardware")).isVisible();
         }
 
-        @DisplayName("Using alt text")
+        @DisplayName("Using alt text") //used in case of images it will click image
         @Test
         void byAltText() {
-            // TODO: Make it so
+            page.getByAltText("Combination Pliers").click();
+            PlaywrightAssertions.assertThat(page.getByText("ForgeFlex Tools ")).isVisible();
         }
 
         @DisplayName("Using title")
         @Test
         void byTitle() {
-            // TODO: Make it so
+            page.getByAltText("Combination Pliers").click();
+            page.getByTitle("Practice Software Testing - Toolshop").click();
         }
     }
 
@@ -262,7 +273,7 @@ public class PlaywrightLocatorsTest {
         }
     }
 
-    private void openPage() {
+    private void  openPage() {
         page.navigate("https://practicesoftwaretesting.com");
     }
 }
