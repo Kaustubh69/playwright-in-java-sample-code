@@ -1,7 +1,6 @@
 package com.serenitydojo.playwright;
 
 import com.microsoft.playwright.*;
-import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import com.microsoft.playwright.options.AriaRole;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -26,7 +25,7 @@ public class AddingItemsToTheCartTest {
         browser = playwright.chromium().launch(
                 new BrowserType.LaunchOptions()
                         .setHeadless(false)
-                        .setArgs(Arrays.asList("--no-sandbox","--disable-extensions","--disable-gpu"))
+                        .setArgs(Arrays.asList("--no-sandbox","--disable-extensions","--disable-gpu", "--start-maximized"))
                         .setSlowMo(500)
         );
         playwright.selectors().setTestIdAttribute("data-test");
@@ -34,7 +33,8 @@ public class AddingItemsToTheCartTest {
 
     @BeforeEach
     public void setUp() {
-        browserContext = browser.newContext();
+        browserContext = browser.newContext(
+                new Browser.NewContextOptions().setViewportSize(null));
         page = browserContext.newPage();
     }
 
