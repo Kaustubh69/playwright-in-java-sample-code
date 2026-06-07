@@ -2,6 +2,7 @@ package com.serenitydojo.playwright;
 
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.AriaRole;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -11,6 +12,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -100,4 +102,23 @@ public class PlaywrightFromsTest {
         var errorMessage = page.getByRole(AriaRole.ALERT).getByText(fieldName + " is required");
         assertThat(errorMessage).isVisible();
     }
+
+    @Test
+    void shouldDisplayCorrectValues(){
+        page.navigate("https://practicesoftwaretesting.com");
+        Locator productPrices = page.getByTestId("product-price");
+        assertThat(productPrices.first()).isVisible();
+        List <Double> prices = productPrices
+                .allInnerTexts()
+                .stream()
+                .map(price -> Double.parseDouble(price.replace("$","")))
+                .toList();
+
+        Assertions.assertThat(prices)
+                .isNotEmpty()
+                .allMatch(price -> price > 0)
+                .doesNotContain(0.0)
+                .allMatch(price -> price < 1000);
+    }
+
 }
