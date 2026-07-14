@@ -50,8 +50,38 @@ public class TodoMvcAppPage {
         delteButoon.click();
     }
 
-    private Locator itemRow(String itemName) {
+    public Locator itemRow(String itemName) {
         return page.getByTestId("todo-item").filter(new Locator.FilterOptions().setHasText(itemName));
     }
 
+    public void completeItem(String itemName) {
+        Locator itemRow = itemRow(itemName);
+        Locator completeButton = itemRow.getByTestId("todo-item-toggle");
+        itemRow.hover();
+        completeButton.click();
+    }
+
+    public String todoCount() {
+        return page.locator(".todo-count").textContent();
+    }
+
+    public void completeItems(String... todoItems) {
+        for (String todoItem : todoItems){
+            completeItem(todoItem);
+        }
+    }
+
+    public void clearCompletedItems() {
+        page.locator(".clear-completed").click();
+    }
+
+
+    public String currentFilter() {
+        return page.getByTestId("footer-navigation").locator("a.selected").textContent();
+    }
+
+    public void addFilter(String filterName) {
+        page.getByTestId("footer-navigation").getByText(filterName).click();
+
+    }
 }
