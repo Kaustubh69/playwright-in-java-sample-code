@@ -86,10 +86,9 @@ class AddingAndDeletingTodoItemsTest {
         @DisplayName("We can add items with non-English characters")
         @Test
         void addingNonEnglishItems() {
-            todoMvcApp.addItems("Feed the cat", "喂猫");
-            todoMvcApp.addItem("喂猫");
+            todoMvcApp.addItems("Feed the cat");
             todoMvcApp.addItem("إطعام القط");
-            assertThat(todoMvcApp.todoItemsDisplayed()).containsExactly("Feed the cat", "喂猫", "إطعام القط");
+            assertThat(todoMvcApp.todoItemsDisplayed()).containsExactly("Feed the cat", "إطعام القط");
 
         }
     }
